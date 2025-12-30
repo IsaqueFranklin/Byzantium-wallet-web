@@ -1,9 +1,19 @@
 'use client'; // Necessary because using hooks
 import Image from 'next/image';
 import { useArkade } from '../hooks/useArkade';
+import { useEffect } from 'react';
 
 export default function Home() {
   const { address, balance, privateKey, isLoading, create, refreshBalance } = useArkade();
+
+  useEffect(() => {
+    if (!refreshBalance) return;
+    refreshBalance();
+
+    const intervalId = setInterval(refreshBalance, 15000);
+
+    return () => clearInterval(intervalId);
+  }, [refreshBalance])
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center bg-black opacity-95 text-white p-8">
