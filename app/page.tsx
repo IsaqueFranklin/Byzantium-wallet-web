@@ -1,19 +1,25 @@
 'use client'; // Necessary because using hooks
 import Image from 'next/image';
 import { useArkade } from '../hooks/useArkade';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const { address, balance, privateKey, isLoading, create, refreshBalance } = useArkade();
+  const [refreshButton, setRefreshButton] = useState<boolean>(false);
 
   useEffect(() => {
     if (!refreshBalance) return;
     refreshBalance();
-
     const intervalId = setInterval(refreshBalance, 15000);
 
     return () => clearInterval(intervalId);
-  }, [refreshBalance])
+  }, [address])
+
+  async function handleRefreshButton() {
+    setRefreshButton(true);
+    await refreshBalance();
+    setRefreshButton(false);
+  }
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center bg-black opacity-95 text-white p-8">
@@ -45,7 +51,7 @@ export default function Home() {
               disabled={isLoading}
               className="bg-black text-yellow-500 font-bold py-3 px-8 rounded-xl hover:bg-gray-100 transition w-full cursor-pointer"
             >
-              {isLoading ? 'Generating...' : 'Restore Wallet'}
+              Restore Wallet
             </button>
           </div>
         </div>
@@ -65,10 +71,10 @@ export default function Home() {
             </div>
 
             <button 
-              onClick={refreshBalance}
+              onClick={() => handleRefreshButton()}
               className="mt-4 w-full bg-yellow-500 text-black font-bold py-3 rounded-xl hover:bg-gray-100 text-sm cursor-pointer"
             >
-              {isLoading ? 'Searching Blockchain...' : 'Refresh Balance'}
+              {refreshButton ? 'Searching Blockchain...' : 'Refresh Balance'}
             </button>
           </div>
 

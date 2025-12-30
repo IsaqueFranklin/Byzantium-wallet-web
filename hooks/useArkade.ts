@@ -42,7 +42,6 @@ export function useArkade() {
                 confirmed: bal.confirmed,
                 ark: bal.ark
             });
-            console.log("This is the new balance: ", bal);
         } catch(error){
             console.error("Error refreshin something!");
         } finally {
