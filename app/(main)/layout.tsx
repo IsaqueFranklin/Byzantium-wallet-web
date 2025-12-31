@@ -44,7 +44,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <button 
             onClick={create}
             disabled={isLoading}
-            className="w-full bg-[#D69225] hover:bg-[#D69225]/60 text-white font-bold py-4 px-8 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full bg-[#D69225] hover:bg-[#D69225]/60 text-white font-semibold py-3 md:py-4 px-4 md:px-8 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
           >
             {isLoading ? <RefreshCw className="animate-spin" /> : <Zap size={20} />}
             {isLoading ? 'Forging Wallet...' : 'Create New Wallet'}
@@ -72,7 +72,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       `}>
         <div className="flex items-center justify-between px-6 py-6 mb-2">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12  rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)]">
+            <div className="h-12 w-12 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)]">
                 <img 
                     src="/logo.png" 
                     alt="logo"
@@ -107,15 +107,19 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
         <div className="lg:hidden flex items-center justify-between p-4 border-b border-zinc-800 bg-[#0c0c0e] shrink-0">
-           <div className="flex items-center gap-2">
-             <div className="h-8 w-8 bg-amber-500 rounded-lg flex items-center justify-center">
-               <span className="font-bold text-black">B</span>
-             </div>
-             <span className="font-bold text-lg">Byzantium</span>
-           </div>
-           <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">
-             <Menu size={24} />
-           </button>
+            <div className="flex items-center gap-2">
+                <div className="h-12 w-12  rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)]">
+                    <img 
+                        src="/logo.png" 
+                        alt="logo"
+                        className="w-12 rounded-full" 
+                    />
+                </div>
+                <span className="font-bold text-lg">Byzantium</span>
+            </div>
+            <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">
+                <Menu size={24} />
+            </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">

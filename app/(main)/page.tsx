@@ -7,9 +7,9 @@ import Header from '@/components/Header';
 // Componente StatCard (pode ficar no mesmo arquivo ou separado)
 function StatCard({ title, value, icon }: any) {
   return (
-    <div className="w-full bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 flex flex-col justify-between shadow-sm hover:border-zinc-700 transition">
+    <div className="col-span-6 col-6 bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 flex flex-col justify-between shadow-sm hover:border-zinc-700 transition">
       <div className="flex justify-between items-start mb-4">
-        <span className="text-zinc-500 text-xs font-bold uppercase tracking-wider">{title}</span>
+        <span className="text-[[#D69225]] text-xs font-bold uppercase tracking-wider">{title}</span>
         <div className="p-2 bg-zinc-900 rounded-lg border border-zinc-800">{icon}</div>
       </div>
       <div className="text-xl font-bold text-zinc-100 tracking-tight overflow-hidden text-ellipsis whitespace-nowrap">{value}</div>
@@ -30,9 +30,8 @@ export default function DashboardPage() {
     <>
       <Header pageName="Overview" />
 
-      <div className="grid grid-cols-2 gap-4 lg:gap-6 pb-20 lg:pb-0">
+      <div className="grid grid-cols-8 gap-4 lg:gap-6 pb-20 lg:pb-0">
         
-        {/* HERO CARD */}
         <div className="col-span-12 relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#D69225]/80 to-amber-500 p-6 lg:p-8 shadow-2xl shadow-amber-900/20">
           <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none"><Zap size={200} /></div>
           <div className="relative z-10">
@@ -54,9 +53,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* STATS */}
-        <StatCard title="Ark Balance" value={`${balance.ark} sats`} icon={<Zap className="text-amber-500" size={18} />} />
-        <StatCard title="On-Chain" value={`${balance.confirmed} sats`} icon={<HardDrive className="text-zinc-400" size={18} />} />
+        <StatCard title="Ark Balance" value={`${balance.ark.toLocaleString()} sats`} icon={<Zap className="text-[#D69225]" size={18} />} />
+        <StatCard title="On-Chain" value={`${balance.confirmed.toLocaleString()} sats`} icon={<HardDrive className="text-zinc-400" size={18} />} />
         
       </div>
     </>
