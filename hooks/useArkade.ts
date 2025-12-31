@@ -1,39 +1,100 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { arkadeService } from "@/lib/arkade";
 
-export function useArkade() {
-    //This is the state the user will see
-    const [address, setAddress] = useState<string>('');
-    const [balance, setBalance] = useState({ confirmed: 0, ark: 0 });
-    const [privateKey, setPrivateKey] = useState<string>('');
+const STORAGE_KEYS = {
+    ADDRESS: "@arkade:address",
+    PRIVATE_KEY: "@arkade:privateKey",
+    BALANCE: "@arkade:balance"
+};
+
+export function useArkade() {    
+    const [address, setAddress] = useState<string>(() => {
+        if (typeof window !== 'undefined') return localStorage.getItem(STORAGE_KEYS.ADDRESS) || '';
+        return '';
+    });
+
+    const [privateKey, setPrivateKey] = useState<string>(() => {
+        if (typeof window !== 'undefined') return localStorage.getItem(STORAGE_KEYS.PRIVATE_KEY) || '';
+        return '';
+    });
+
+    const [balance, setBalance] = useState<{ confirmed: number, ark: number }>(() => {
+        if (typeof window !== 'undefined') {
+            const savedBalance = localStorage.getItem(STORAGE_KEYS.BALANCE);
+            return savedBalance ? JSON.parse(savedBalance) : { confirmed: 0, ark: 0 };
+        }
+        return { confirmed: 0, ark: 0 };
+    });
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    //First action, create wallet and generate address
+    // When the ref changes, react doesn't refresh dom. It survives rerenders.
+    const isRestored = useRef(false);
+
+    // Hydrates arkadeService when page reloads
+    useEffect(() => {
+        const restoreWalletToService = async () => {
+            if (privateKey && !isRestored.current) {
+                console.log("♻️ Restoring wallet session...");
+                try {
+                    // Calls load wallet to load a new walletInstance with the privateKey
+                    await arkadeService.loadWallet(privateKey);
+                    // Also generates and sets tha address again in case we are restoring a wallet from homepage
+                    const addr = await arkadeService.getAddress();
+                    setAddress(addr);
+
+                    isRestored.current = true;
+                    
+                    // Auto refresh balance when restoring
+                    refreshBalance();
+                } catch (error) {
+                    console.error("Failed to restore wallet:", error);
+                }
+            }
+        };
+
+        restoreWalletToService();
+    }, [privateKey]);
+
+    // Autosaves to localStorage when the state changes
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (address) localStorage.setItem(STORAGE_KEYS.ADDRESS, address);
+            if (privateKey) localStorage.setItem(STORAGE_KEYS.PRIVATE_KEY, privateKey);
+            localStorage.setItem(STORAGE_KEYS.BALANCE, JSON.stringify(balance));
+        }
+    }, [address, privateKey, balance]);
+
     async function create() {
         setIsLoading(true);
         
         try {
-            //Creating wallet and setting privkey
             const keys = await arkadeService.createWallet();
-            setPrivateKey(keys.privateKey)
+            
+            setPrivateKey(keys.privateKey);
+            
+            isRestored.current = true; 
 
-            //Getting the address
             const addr = await arkadeService.getAddress();
             setAddress(addr);
 
-            //Reseting the visual balance
             setBalance({ confirmed: 0, ark: 0 });
         } catch(error){
-            console.log("Error to create: ", error);
+            console.error("Error to create: ", error);
             alert("Error creating wallet!");
         } finally {
             setIsLoading(false);
         }
     }
 
-    //Second action, refresh balance
     async function refreshBalance() {
-        if(!address) return;
+        if(!privateKey) return;
+        
+        if (!isRestored.current) {
+            console.log("Service not ready yet. Waiting for restore...");
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -43,9 +104,22 @@ export function useArkade() {
                 ark: bal.ark
             });
         } catch(error){
-            console.error("Error refreshin something!");
+            console.error("Error refreshing balance!", error);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    function disconnect() {
+        setAddress('');
+        setPrivateKey('');
+        setBalance({ confirmed: 0, ark: 0 });
+        isRestored.current = false;
+        
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem(STORAGE_KEYS.ADDRESS);
+            localStorage.removeItem(STORAGE_KEYS.PRIVATE_KEY);
+            localStorage.removeItem(STORAGE_KEYS.BALANCE);
         }
     }
 
@@ -55,6 +129,7 @@ export function useArkade() {
         privateKey,
         isLoading,
         create,
-        refreshBalance
+        refreshBalance,
+        disconnect
     }
 }

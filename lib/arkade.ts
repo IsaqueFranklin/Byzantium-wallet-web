@@ -1,7 +1,6 @@
 import { SingleKey, Wallet } from '@arkade-os/sdk';
 import { generateNostrNsec } from './nostr';
 
-// Variável para segurar a carteira na memória (Singleton)
 let walletInstance: Wallet | null = null;
 
 export const arkadeService = {
@@ -24,6 +23,27 @@ export const arkadeService = {
     };
   },
 
+  async loadWallet(privateKeyHex: string) {
+    if (walletInstance) return;
+
+    console.log("Initializing wallet instance from key...");
+    
+    try {
+      const identity = SingleKey.fromHex(privateKeyHex);
+      
+      walletInstance = await Wallet.create({
+        identity,
+        esploraUrl: 'https://mutinynet.com/api',
+        arkServerUrl: 'https://mutinynet.arkade.sh',
+      });
+      
+      console.log("Wallet instance restored in memory!");
+    } catch (e) {
+      console.error("Failed to load wallet instance", e);
+      throw e;
+    }
+  },
+
   getAddress(){
     if(!walletInstance) throw new Error("Wallet not found.")
     return walletInstance.getAddress();
@@ -34,14 +54,12 @@ export const arkadeService = {
     //The SDK returns a complex object
     const balance:any = await walletInstance.getBalance();
 
-    // balance.onchain.total = Total balance on blockchain (slow)
-    // balance.offchain.total = Ark balance (fast/virtual)
     return {
       confirmed: balance.boarding.confirmed,
       unconfirmed: balance.boarding.unconfirmed,
       
       // Available = Ark (Off-chain)
-      // O 'available' já soma settled + preconfirmed
+      // Available already does settled + preconfirmed
       ark: balance.available
     };
   }
