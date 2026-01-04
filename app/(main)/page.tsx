@@ -3,6 +3,9 @@ import { useArkade } from '../../hooks/useArkade';
 import { useState, useEffect } from 'react';
 import { ArrowDownLeft, ArrowUpRight, Activity, Copy, Eye, EyeOff, RefreshCw, Zap, HardDrive } from 'lucide-react';
 import Header from '@/components/Header';
+import { format } from 'date-fns';
+import Link from 'next/link';
+import TxHistory from '@/components/TxHistory';
 
 // Componente StatCard (pode ficar no mesmo arquivo ou separado)
 function StatCard({ title, value, icon }: any) {
@@ -18,7 +21,7 @@ function StatCard({ title, value, icon }: any) {
 }
 
 export default function DashboardPage() {
-  const { address, balance, history, refreshBalance } = useArkade();
+  const { address, balance, refreshBalance } = useArkade();
 
   useEffect(() => {
     if (refreshBalance) refreshBalance();
@@ -43,21 +46,25 @@ export default function DashboardPage() {
               <span className="text-lg lg:text-xl text-amber-200 font-medium">sats</span>
             </div>
             <div className="flex gap-3 mt-6 lg:mt-8">
-              <button className="flex-1 lg:flex-none justify-center bg-white text-black hover:bg-zinc-100 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition shadow-lg text-sm lg:text-base cursor-pointer">
-                <ArrowDownLeft size={18} /> Receive
-              </button>
-              <button className="flex-1 lg:flex-none justify-center bg-black/20 hover:bg-black/30 text-white border border-white/20 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition backdrop-blur-sm text-sm lg:text-base cursor-pointer">
-                <ArrowUpRight size={18} /> Send
-              </button>
+              <Link href="/receive">
+                <button className="flex-1 cursor-pointer lg:flex-none justify-center bg-white text-black hover:bg-zinc-100 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition shadow-lg text-sm lg:text-base cursor-pointer">
+                  <ArrowDownLeft size={18} /> Receive
+                </button>
+              </Link>
+              <Link href="/send">
+                <button className="flex-1 cursor-pointer lg:flex-none justify-center bg-black/20 hover:bg-black/30 text-white border border-white/20 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition backdrop-blur-sm text-sm lg:text-base cursor-pointer">
+                  <ArrowUpRight size={18} /> Send
+                </button>
+              </Link>
             </div>
           </div>
         </div>
 
         <StatCard title="Ark Balance" value={`${balance.ark.toLocaleString()} sats`} icon={<Zap className="text-[#D69225]" size={18} />} />
         <StatCard title="On-Chain" value={`${balance.confirmed.toLocaleString()} sats`} icon={<HardDrive className="text-zinc-400" size={18} />} />
-        
-        <p>{ JSON.stringify(history) }</p>
       </div>
+
+      <TxHistory />
     </>
   );
 }
