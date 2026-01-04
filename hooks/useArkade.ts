@@ -28,6 +28,8 @@ export function useArkade() {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const [history, setHistory] = useState<any>('');
+
     // When the ref changes, react doesn't refresh dom. It survives rerenders.
     const isRestored = useRef(false);
 
@@ -103,6 +105,8 @@ export function useArkade() {
                 confirmed: bal.confirmed,
                 ark: bal.ark
             });
+            const txs = await arkadeService.getTxHistory();
+            setHistory(txs);
         } catch(error){
             console.error("Error refreshing balance!", error);
         } finally {
@@ -128,8 +132,9 @@ export function useArkade() {
         balance,
         privateKey,
         isLoading,
+        history,
         create,
         refreshBalance,
-        disconnect
+        disconnect,
     }
 }

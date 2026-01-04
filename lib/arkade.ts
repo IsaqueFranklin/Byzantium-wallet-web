@@ -1,6 +1,18 @@
 import { SingleKey, Wallet } from '@arkade-os/sdk';
 import { generateNostrNsec } from './nostr';
 
+export type Tx = {
+  amount: number
+  boardingTxid: string
+  createdAt: number
+  explorable: string | undefined
+  preconfirmed: boolean
+  redeemTxid: string
+  roundTxid: string
+  settled: boolean
+  type: string
+}
+
 let walletInstance: Wallet | null = null;
 
 export const arkadeService = {
@@ -62,6 +74,43 @@ export const arkadeService = {
       // Available already does settled + preconfirmed
       ark: balance.available
     };
+  },
+
+  async getTxHistory() {
+    if(!walletInstance) throw new Error("Wallet not found.")
+    const txs: Tx[] = []
+    try {
+      const res = await walletInstance.getTransactionHistory()
+      if (!res) return []
+      for (const tx of res) {
+        const date = new Date(tx.createdAt)
+        const unix = Math.floor(date.getTime() / 1000)
+        const { key, settled, type, amount } = tx
+        const explorable = key.boardingTxid ? key.boardingTxid : key.commitmentTxid ? key.commitmentTxid : undefined
+        txs.push({
+          amount: Math.abs(amount),
+          boardingTxid: key.boardingTxid,
+          redeemTxid: key.arkTxid,
+          roundTxid: key.commitmentTxid,
+          createdAt: unix,
+          explorable,
+          preconfirmed: !settled,
+          settled: type === 'SENT' ? true : settled, // show all sent tx as settled
+          type: type.toLowerCase(),
+        })
+      }
+    } catch (err) {
+      console.error(err, 'error getting tx history')
+      return []
+    }
+    // sort by date, if have same date, put 'received' txs first
+    txs.sort((a, b) => {
+      if (a.createdAt === b.createdAt) return a.type === 'sent' ? -1 : 1
+      if (b.createdAt === 0) return 1 // tx with no date go to the top
+      if (a.createdAt === 0) return -1 // tx with no date go to the top
+      return a.createdAt > b.createdAt ? -1 : 1
+    })
+    return txs
   }
 
 };

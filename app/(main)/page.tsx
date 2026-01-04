@@ -18,7 +18,7 @@ function StatCard({ title, value, icon }: any) {
 }
 
 export default function DashboardPage() {
-  const { address, balance, refreshBalance } = useArkade();
+  const { address, balance, history, refreshBalance } = useArkade();
 
   useEffect(() => {
     if (refreshBalance) refreshBalance();
@@ -56,6 +56,7 @@ export default function DashboardPage() {
         <StatCard title="Ark Balance" value={`${balance.ark.toLocaleString()} sats`} icon={<Zap className="text-[#D69225]" size={18} />} />
         <StatCard title="On-Chain" value={`${balance.confirmed.toLocaleString()} sats`} icon={<HardDrive className="text-zinc-400" size={18} />} />
         
+        <p>{ JSON.stringify(history) }</p>
       </div>
     </>
   );
