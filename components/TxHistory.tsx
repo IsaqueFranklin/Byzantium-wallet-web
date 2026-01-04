@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 
 export default function TxHistory() {
-    const { history } = useArkade();
+    const { history, isLoading } = useArkade();
 
     function newDate(obj:any){
         const timestamp = new Date(obj * 1000);
@@ -14,9 +14,9 @@ export default function TxHistory() {
     
     return (
         <>
-            {!history || history == undefined ? (
+            {!history && isLoading ? (
                 <div className="bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 shadow-sm hover:border-zinc-700 transition mt-8 items-center justify-center text-center">
-                <div className="animate-spin rounded-full h-10 w-10 border-4 border-b-transparent border-amber-500 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-b-transparent border-amber-500 mx-auto"></div>
                 </div>
             ) : (
                 <div className="bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 shadow-sm hover:border-zinc-700 transition mt-8">

@@ -114,6 +114,10 @@ export function useArkade() {
         }
     }
 
+    async function payArkAddress(sats: number, address: string) {
+        await arkadeService.sendOffChain(sats, address);
+    }
+
     function disconnect() {
         setAddress('');
         setPrivateKey('');
@@ -136,5 +140,6 @@ export function useArkade() {
         create,
         refreshBalance,
         disconnect,
+        payArkAddress
     }
 }

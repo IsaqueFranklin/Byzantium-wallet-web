@@ -76,6 +76,10 @@ export const arkadeService = {
     };
   },
 
+  async sendOffChain(sats: number, address: string) {
+    return walletInstance?.sendBitcoin({ address, amount: sats });
+  },
+
   async getTxHistory() {
     if(!walletInstance) throw new Error("Wallet not found.")
     const txs: Tx[] = []
