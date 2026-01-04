@@ -20,25 +20,25 @@ export default function TxHistory() {
                 </div>
             ) : (
                 <div className="bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 shadow-sm hover:border-zinc-700 transition mt-8">
-                <h2 className='mb-6 text-[[#D69225]] text-xs font-bold uppercase tracking-wider justify-center'>Transaction history</h2>
-                {history && history.map((item:any, key:any) => (
-                    <div key={key} className='bg-zinc-800/40 border border-zinc-800/90 rounded-3xl p-4 my-2'>
-                    <div className='flex gap-8 items-center'>
-                        <div className='flex gap-4 items-center'>
-                        <div className='p-1 border border-zinc-800/90 rounded-full bg-white shadow-lg'>
-                            {item.type == "received" ? (
-                            <ArrowDownLeft className='text-zinc-800/90'/>
-                            ) : (
-                            <ArrowUpRight className='text-zinc-800/90'/>
-                            )}
+                    <h2 className='mb-6 text-[[#D69225]] text-xs font-bold uppercase tracking-wider justify-center'>Transaction history</h2>
+                    {history && history.map((item:any, key:any) => (
+                        <div key={key} className='bg-zinc-800/40 border border-zinc-800/90 rounded-3xl p-4 my-2'>
+                        <div className='flex gap-8 items-center'>
+                            <div className='flex gap-4 items-center'>
+                            <div className='p-1 border border-zinc-800/90 rounded-full bg-white shadow-lg'>
+                                {item.type == "received" ? (
+                                <ArrowDownLeft className='text-zinc-800/90'/>
+                                ) : (
+                                <ArrowUpRight className='text-zinc-800/90'/>
+                                )}
+                            </div>
+                            <p className='text-lg font-semibold'>{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</p>
+                            </div>
+                            <p className='font-semibold text-gray-300 text-lg'>{item.type == "received" ? "+ "+item.amount : "- "+item.amount} sats</p>
                         </div>
-                        <p className='text-lg font-semibold'>{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</p>
+                        <p className='mt-4'>{newDate(item.createdAt).toLocaleString()}</p>
                         </div>
-                        <p className='font-semibold text-gray-300 text-lg'>{item.type == "received" ? "+ "+item.amount : "- "+item.amount} sats</p>
-                    </div>
-                    <p className='mt-4'>{newDate(item.createdAt).toLocaleString()}</p>
-                    </div>
-                ))}
+                    ))}
                 </div>
             )}
         </>

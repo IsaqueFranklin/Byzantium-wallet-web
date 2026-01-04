@@ -10,7 +10,7 @@ import TxHistory from '@/components/TxHistory';
 // Componente StatCard (pode ficar no mesmo arquivo ou separado)
 function StatCard({ title, value, icon }: any) {
   return (
-    <div className="col-span-6 col-6 bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 flex flex-col justify-between shadow-sm hover:border-zinc-700 transition">
+    <div className="bg-[#121214] border border-zinc-800/60 rounded-3xl p-6 shadow-sm hover:border-zinc-700 transition w-full">
       <div className="flex justify-between items-start mb-4">
         <span className="text-[[#D69225]] text-xs font-bold uppercase tracking-wider">{title}</span>
         <div className="p-2 bg-zinc-900 rounded-lg border border-zinc-800">{icon}</div>
@@ -31,35 +31,33 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Header pageName="Overview" />
-
-      <div className="grid grid-cols-8 gap-4 lg:gap-6 pb-20 lg:pb-0">
-        
-        <div className="col-span-12 relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#D69225]/80 to-amber-500 p-6 lg:p-8 shadow-2xl shadow-amber-900/20">
-          <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none"><Zap size={200} /></div>
-          <div className="relative z-10">
-            <span className="text-amber-100/80 text-xs lg:text-sm font-medium tracking-wider uppercase">Total Balance</span>
-            <div className="flex flex-col lg:flex-row lg:items-baseline gap-1 lg:gap-2 mt-1">
-              <span className="text-5xl lg:text-6xl font-bold text-white tracking-tighter">
-                {(balance.confirmed + balance.ark).toLocaleString()}
-              </span>
-              <span className="text-lg lg:text-xl text-amber-200 font-medium">sats</span>
-            </div>
-            <div className="flex gap-3 mt-6 lg:mt-8">
-              <Link href="/receive">
-                <button className="flex-1 cursor-pointer lg:flex-none justify-center bg-white text-black hover:bg-zinc-100 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition shadow-lg text-sm lg:text-base cursor-pointer">
-                  <ArrowDownLeft size={18} /> Receive
-                </button>
-              </Link>
-              <Link href="/send">
-                <button className="flex-1 cursor-pointer lg:flex-none justify-center bg-black/20 hover:bg-black/30 text-white border border-white/20 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition backdrop-blur-sm text-sm lg:text-base cursor-pointer">
-                  <ArrowUpRight size={18} /> Send
-                </button>
-              </Link>
-            </div>
+      <Header pageName="Overview" />  
+      <div className="col-span-12 relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#D69225]/80 to-amber-500 p-6 lg:p-8 shadow-2xl shadow-amber-900/20">
+        <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none"><Zap size={200} /></div>
+        <div className="relative z-10">
+          <span className="text-amber-100/80 text-xs lg:text-sm font-medium tracking-wider uppercase">Total Balance</span>
+          <div className="flex flex-col lg:flex-row lg:items-baseline gap-1 lg:gap-2 mt-1">
+            <span className="text-5xl lg:text-6xl font-bold text-white tracking-tighter">
+              {(balance.confirmed + balance.ark).toLocaleString()}
+            </span>
+            <span className="text-lg lg:text-xl text-amber-200 font-medium">sats</span>
+          </div>
+          <div className="flex gap-3 mt-6 lg:mt-8">
+            <Link href="/receive">
+              <button className="flex-1 cursor-pointer lg:flex-none justify-center bg-white text-black hover:bg-zinc-100 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition shadow-lg text-sm lg:text-base cursor-pointer">
+                <ArrowDownLeft size={18} /> Receive
+              </button>
+            </Link>
+            <Link href="/send">
+              <button className="flex-1 cursor-pointer lg:flex-none justify-center bg-black/20 hover:bg-black/30 text-white border border-white/20 font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition backdrop-blur-sm text-sm lg:text-base cursor-pointer">
+                <ArrowUpRight size={18} /> Send
+              </button>
+            </Link>
           </div>
         </div>
+      </div>
 
+      <div className="md:flex md:gap-6 w-full space-y-6 md:space-y-0 mt-6">
         <StatCard title="Ark Balance" value={`${balance.ark.toLocaleString()} sats`} icon={<Zap className="text-[#D69225]" size={18} />} />
         <StatCard title="On-Chain" value={`${balance.confirmed.toLocaleString()} sats`} icon={<HardDrive className="text-zinc-400" size={18} />} />
       </div>
